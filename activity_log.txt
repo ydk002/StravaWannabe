@@ -1,0 +1,5 @@
+User Info:
+User{name='TestSubject', age=33, weight=67.0, height=188.0, gender='Non-Binary', goalType='Hobby'}
+
+Activities:
+Activity{dateTime=2025-10-20 10:50, distance=42.0 km, duration=337.0 min, type='Running', pace=8.02 min/km}

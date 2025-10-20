@@ -9,6 +9,11 @@ package com.mycompany.stravawannabe;
  * @author antal
  */
 import java.util.ArrayList;
+import java.io.BufferedWriter;
+import java.io.BufferedReader;
+import java.io.FileWriter;
+import java.io.FileReader;
+import java.io.IOException;
 
 public class Tracker {
     private User user;
@@ -60,6 +65,41 @@ public class Tracker {
             }
         }
     }
+    
+    public void loadFromFile(String filename) {
+    try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+        String line;
+        System.out.println("\nLoading data from " + filename + "...\n");
+
+        while ((line = reader.readLine()) != null) {
+            System.out.println(line);
+        }
+
+        System.out.println("\nData loaded successfully!");
+    } catch (IOException e) {
+        System.out.println("Error loading data: " + e.getMessage());
+    }
+}
+
+    
+    public void saveToFile(String filename) {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+        // Save user info
+        writer.write("User Info:\n");
+        writer.write(user.toString() + "\n\n");
+
+        // Save activities
+        writer.write("Activities:\n");
+        for (Activity a : activities) {
+            writer.write(a.toString() + "\n");
+        }
+
+        System.out.println("Data saved successfully to " + filename);
+    } catch (IOException e) {
+        System.out.println("Error saving data: " + e.getMessage());
+    }
+}
+
 
     // Optional: show a summary of user stats
     public void showSummary() {

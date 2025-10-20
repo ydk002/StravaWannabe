@@ -19,14 +19,40 @@ public class StravaWannabe {
         System.out.print("Enter your name: ");
         String name = scanner.nextLine();
 
-        System.out.print("Enter your age: ");
-        int age = scanner.nextInt();
+        int age = 0;
+        while (true) {
+            try {
+                System.out.print("Enter your age: ");
+                age = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input! Please enter a number for age.");
+            }
+        }
 
-        System.out.print("Enter your weight (kg): ");
-        double weight = scanner.nextDouble();
+        // --- WEIGHT (with error handling) ---
+        double weight = 0;
+        while (true) {
+            try {
+                System.out.print("Enter your weight (kg): ");
+                weight = Double.parseDouble(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input! Please enter a number for weight.");
+            }
+        }
 
-        System.out.print("Enter your height (cm): ");
-        double height = scanner.nextDouble();
+        // --- HEIGHT (with error handling) ---
+        double height = 0;
+        while (true) {
+            try {
+                System.out.print("Enter your height (cm): ");
+                height = Double.parseDouble(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input! Please enter a number for height.");
+            }
+        }
 
         scanner.nextLine(); // consume leftover newline
 
@@ -43,6 +69,12 @@ public class StravaWannabe {
         // Step 2: Create Tracker
         Tracker tracker = new Tracker(user);
         System.out.println("\nTracker created for user: " + user.getName());
+        System.out.print("\nDo you want to load previous data from file? (yes/no): ");
+        String loadChoice = scanner.nextLine();
+
+        if (loadChoice.equalsIgnoreCase("yes")) {
+            tracker.loadFromFile("activity_log.txt");
+        }
 
         // Step 3: Log Activities
         System.out.print("\nHow many activities do you want to log? ");
@@ -76,6 +108,7 @@ public class StravaWannabe {
 // Display summary stats
         System.out.println("\nUser Summary:");
         tracker.showSummary();
+        tracker.saveToFile("activity_log.txt");
 
     }
 }
