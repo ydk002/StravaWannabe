@@ -16,8 +16,16 @@ public class StravaWannabe {
         Scanner scanner = new Scanner(System.in);
 
         // Step 1: Create User
-        System.out.print("Enter your name: ");
-        String name = scanner.nextLine();
+        String name = "";
+        while (true) {
+            System.out.print("Enter your name: ");
+            name = scanner.nextLine().trim();
+            if (!name.isEmpty()) {
+                break;
+            } else {
+                System.out.println("Name cannot be empty! Please try again.");
+            }
+        }
 
         int age = 0;
         while (true) {
@@ -56,11 +64,27 @@ public class StravaWannabe {
 
         scanner.nextLine(); // consume leftover newline
 
-        System.out.print("Enter your gender: ");
-        String gender = scanner.nextLine();
+        String gender = "";
+        while (true) {
+            System.out.print("Enter your gender: ");
+            gender = scanner.nextLine().trim();
+            if (!gender.isEmpty()) {
+                break;
+            } else {
+                System.out.println("Gender cannot be empty! Please try again.");
+            }
+        }
 
-        System.out.print("Enter your goal type (Weight loss, Staying fit, Improving speed, Hobby): ");
-        String goalType = scanner.nextLine();
+        String goalType = "";
+        while (true) {
+            System.out.print("Enter your goal type (Weight loss, Staying fit, Improving speed, Hobby): ");
+            goalType = scanner.nextLine().trim();
+            if (!goalType.isEmpty()) {
+                break;
+            } else {
+                System.out.println("Goal type cannot be empty! Please try again.");
+            }
+        }
 
         User user = new User(name, age, weight, height, gender, goalType);
         System.out.println("\nUser created:");
@@ -84,8 +108,16 @@ public class StravaWannabe {
         for (int i = 1; i <= numActivities; i++) {
             System.out.println("\nActivity " + i + ":");
 
-            System.out.print("Enter activity type (Running, Cycling, etc.): ");
-            String type = scanner.nextLine();
+            String type = "";
+            while (true) {
+                System.out.print("Enter activity type (Running, Cycling, etc.): ");
+                type = scanner.nextLine().trim();
+                if (!type.isEmpty()) {
+                    break;
+                } else {
+                    System.out.println("Activity type cannot be empty! Please try again.");
+                }
+            }
 
             System.out.print("Enter distance (km): ");
             double distance = scanner.nextDouble();

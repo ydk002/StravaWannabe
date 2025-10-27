@@ -1,5 +1,5 @@
 User Info:
-User{name='TestSubject', age=33, weight=67.0, height=188.0, gender='Non-Binary', goalType='Hobby'}
+User{name='Szabi', age=22, weight=67.0, height=175.0, gender='Male', goalType='Staying Fit'}
 
 Activities:
-Activity{dateTime=2025-10-20 10:50, distance=42.0 km, duration=337.0 min, type='Running', pace=8.02 min/km}
+Activity{dateTime=2025-10-27 09:23, distance=7.0 km, duration=40.0 min, type='Run', pace=5.71 min/km}
