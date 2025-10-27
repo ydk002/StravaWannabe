@@ -24,6 +24,12 @@ public class Tracker {
         this.user = user;
         this.activities = new ArrayList<>();
     }
+    
+    
+    public User getUser() {
+    return user;
+}
+
 
     // Add a new activity
     public void addActivity(Activity activity) {

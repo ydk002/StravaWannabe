@@ -1,5 +1,5 @@
 /*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+     * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  */
 package com.mycompany.stravawannabe;
 
@@ -9,6 +9,8 @@ package com.mycompany.stravawannabe;
  */
 import java.util.Scanner;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 
 public class StravaWannabe {
 
@@ -62,8 +64,6 @@ public class StravaWannabe {
             }
         }
 
-        scanner.nextLine(); // consume leftover newline
-
         String gender = "";
         while (true) {
             System.out.print("Enter your gender: ");
@@ -75,14 +75,29 @@ public class StravaWannabe {
             }
         }
 
+        // --- GOAL TYPE (validated) ---
+        List<String> validGoals = Arrays.asList(
+                "Weightloss", "Staying fit", "Improving speed", "Hobby"
+        );
+
         String goalType = "";
         while (true) {
-            System.out.print("Enter your goal type (Weight loss, Staying fit, Improving speed, Hobby): ");
+            System.out.print("Enter your goal type (Weightloss / Staying fit / Improving speed / Hobby): ");
             goalType = scanner.nextLine().trim();
-            if (!goalType.isEmpty()) {
+
+            boolean matchFound = false;
+            for (String valid : validGoals) {
+                if (goalType.equalsIgnoreCase(valid)) {
+                    goalType = valid; // normalize capitalization
+                    matchFound = true;
+                    break;
+                }
+            }
+
+            if (matchFound) {
                 break;
             } else {
-                System.out.println("Goal type cannot be empty! Please try again.");
+                System.out.println("This is not a possible goal type. Please choose one of the listed options.");
             }
         }
 
@@ -100,47 +115,152 @@ public class StravaWannabe {
             tracker.loadFromFile("activity_log.txt");
         }
 
-        // Step 3: Log Activities
-        System.out.print("\nHow many activities do you want to log? ");
-        int numActivities = scanner.nextInt();
-        scanner.nextLine(); // consume leftover newline
+        // ===== MENU LOOP START =====
+        boolean running = true;
+        while (running) {
+            System.out.println("\n--- MAIN MENU ---");
+            System.out.println("1. Add new activity");
+            System.out.println("2. View all activities");
+            System.out.println("3. Show summary");
+            System.out.println("4. Save data to file");
+            System.out.println("5. Load data from file");
+            System.out.println("6. Exit");
+            System.out.print("Choose an option (1-6): ");
 
-        for (int i = 1; i <= numActivities; i++) {
-            System.out.println("\nActivity " + i + ":");
+            String choice = scanner.nextLine().trim();
 
-            String type = "";
-            while (true) {
-                System.out.print("Enter activity type (Running, Cycling, etc.): ");
-                type = scanner.nextLine().trim();
-                if (!type.isEmpty()) {
+            switch (choice) {
+                case "1":
+                    addActivityInteractive(scanner, tracker);
                     break;
-                } else {
-                    System.out.println("Activity type cannot be empty! Please try again.");
-                }
+                case "2":
+                    tracker.listActivities();
+                    break;
+                case "3":
+                    tracker.showSummary();
+                    break;
+                case "4":
+                    tracker.saveToFile("activity_log.txt");
+                    break;
+                case "5":
+                    tracker.loadFromFile("activity_log.txt");
+                    break;
+                case "6":
+                    System.out.println("Exiting... Goodbye!");
+                    running = false;
+                    break;
+                default:
+                    System.out.println("Invalid option. Please enter a number between 1 and 6.");
             }
-
-            System.out.print("Enter distance (km): ");
-            double distance = scanner.nextDouble();
-
-            System.out.print("Enter duration (minutes): ");
-            double duration = scanner.nextDouble();
-
-            scanner.nextLine(); // consume leftover newline
-
-            Activity activity = new Activity(LocalDateTime.now(), distance, duration, type);
-            tracker.addActivity(activity);
-
-            System.out.println("Activity logged successfully!");
         }
+        // ===== MENU LOOP END =====
 
         // Step 4: Display all activities
         System.out.println("\nAll logged activities:");
         tracker.listActivities(); // prints all activities
 
-// Display summary stats
+        // Display summary stats
         System.out.println("\nUser Summary:");
         tracker.showSummary();
         tracker.saveToFile("activity_log.txt");
 
+    }
+    // --- Helper method stubs (implement next) ---
+
+    private static void addActivityInteractive(Scanner scanner, Tracker tracker) {
+        System.out.println("\n--- Add New Activity ---");
+
+        // === ACTIVITY TYPE ===
+        List<String> validActivities = Arrays.asList("Running", "Cycling", "Walking", "Swimming", "Gym", "Hiking");
+
+        String type = "";
+        while (true) {
+            System.out.print("Enter activity type (Running / Cycling / Walking / Swimming / Gym / Hiking): ");
+            type = scanner.nextLine().trim();
+
+            boolean matchFound = false;
+            for (String valid : validActivities) {
+                if (type.equalsIgnoreCase(valid)) {
+                    type = valid; // normalize
+                    matchFound = true;
+                    break;
+                }
+            }
+
+            if (matchFound) {
+                break;
+            } else {
+                System.out.println("Invalid activity type! Please enter one of the available options.");
+            }
+        }
+
+        // === DISTANCE ===
+        double distance = 0;
+        while (true) {
+            try {
+                System.out.print("Enter distance (km): ");
+                distance = Double.parseDouble(scanner.nextLine());
+                if (distance > 0) {
+                    break;
+                } else {
+                    System.out.println("Distance must be positive!");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input! Please enter a numeric value.");
+            }
+        }
+
+        // === DURATION ===
+        double duration = 0;
+        while (true) {
+            try {
+                System.out.print("Enter duration (minutes): ");
+                duration = Double.parseDouble(scanner.nextLine());
+                if (duration > 0) {
+                    break;
+                } else {
+                    System.out.println("Duration must be positive!");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input! Please enter a numeric value.");
+            }
+        }
+
+        // === LOCATION ===
+        List<String> validLocations = Arrays.asList("Park", "Gym", "Street", "Trail", "Home");
+
+        String location = "";
+        while (true) {
+            System.out.print("Enter location (Park / Gym / Street / Trail / Home): ");
+            location = scanner.nextLine().trim();
+
+            boolean matchFound = false;
+            for (String valid : validLocations) {
+                if (location.equalsIgnoreCase(valid)) {
+                    location = valid; // normalize capitalization
+                    matchFound = true;
+                    break;
+                }
+            }
+
+            if (matchFound) {
+                break;
+            } else {
+                System.out.println("Invalid location! Please enter one of the listed options.");
+            }
+        }
+
+        // === CREATE AND ADD ACTIVITY ===
+        Activity activity = new Activity(
+                LocalDateTime.now(),
+                distance,
+                duration,
+                type,
+                location,
+                tracker.getUser().getWeight() // use the user's weight for calorie calculation
+        );
+
+        tracker.addActivity(activity);
+        System.out.println("Activity added successfully!");
     }
 }
