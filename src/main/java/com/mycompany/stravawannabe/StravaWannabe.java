@@ -3,10 +3,6 @@
  */
 package com.mycompany.stravawannabe;
 
-/**
- *
- * @author antal
- */
 import java.util.Scanner;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -17,100 +13,26 @@ public class StravaWannabe {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        // Step 1: Create User
-        String name = "";
-        while (true) {
-            System.out.print("Enter your name: ");
-            name = scanner.nextLine().trim();
-            if (!name.isEmpty()) {
-                break;
-            } else {
-                System.out.println("Name cannot be empty! Please try again.");
-            }
+        // --- MULTI-USER LOGIN/REGISTER ---
+        UserManager userManager = new UserManager();
+        User loggedInUser = null;
+
+        System.out.println("Welcome! Do you want to (1) Login or (2) Register?");
+        String option = scanner.nextLine().trim();
+        if (option.equals("1")) {
+            loggedInUser = userManager.loginUser(scanner);
+        } else {
+            loggedInUser = userManager.registerUser(scanner);
         }
 
-        int age = 0;
-        while (true) {
-            try {
-                System.out.print("Enter your age: ");
-                age = Integer.parseInt(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input! Please enter a number for age.");
-            }
-        }
+        // --- CREATE TRACKER FOR LOGGED-IN USER ---
+        Tracker tracker = new Tracker(loggedInUser);
+        System.out.println(loggedInUser);
+        System.out.println("\nTracker created for user: " + loggedInUser.getName());
 
-        // --- WEIGHT (with error handling) ---
-        double weight = 0;
-        while (true) {
-            try {
-                System.out.print("Enter your weight (kg): ");
-                weight = Double.parseDouble(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input! Please enter a number for weight.");
-            }
-        }
-
-        // --- HEIGHT (with error handling) ---
-        double height = 0;
-        while (true) {
-            try {
-                System.out.print("Enter your height (cm): ");
-                height = Double.parseDouble(scanner.nextLine());
-                break;
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input! Please enter a number for height.");
-            }
-        }
-
-        String gender = "";
-        while (true) {
-            System.out.print("Enter your gender: ");
-            gender = scanner.nextLine().trim();
-            if (!gender.isEmpty()) {
-                break;
-            } else {
-                System.out.println("Gender cannot be empty! Please try again.");
-            }
-        }
-
-        // --- GOAL TYPE (validated) ---
-        List<String> validGoals = Arrays.asList(
-                "Weightloss", "Staying fit", "Improving speed", "Hobby"
-        );
-
-        String goalType = "";
-        while (true) {
-            System.out.print("Enter your goal type (Weightloss / Staying fit / Improving speed / Hobby): ");
-            goalType = scanner.nextLine().trim();
-
-            boolean matchFound = false;
-            for (String valid : validGoals) {
-                if (goalType.equalsIgnoreCase(valid)) {
-                    goalType = valid; // normalize capitalization
-                    matchFound = true;
-                    break;
-                }
-            }
-
-            if (matchFound) {
-                break;
-            } else {
-                System.out.println("This is not a possible goal type. Please choose one of the listed options.");
-            }
-        }
-
-        User user = new User(name, age, weight, height, gender, goalType);
-        System.out.println("\nUser created:");
-        System.out.println(user);
-
-        // Step 2: Create Tracker
-        Tracker tracker = new Tracker(user);
-        System.out.println("\nTracker created for user: " + user.getName());
+        // --- LOAD PREVIOUS DATA ---
         System.out.print("\nDo you want to load previous data from file? (yes/no): ");
         String loadChoice = scanner.nextLine();
-
         if (loadChoice.equalsIgnoreCase("yes")) {
             tracker.loadFromFile("activity_log.txt");
         }
@@ -155,29 +77,25 @@ public class StravaWannabe {
         }
         // ===== MENU LOOP END =====
 
-        // Step 4: Display all activities
+        // --- DISPLAY ALL ACTIVITIES AND SUMMARY BEFORE EXIT ---
         System.out.println("\nAll logged activities:");
-        tracker.listActivities(); // prints all activities
+        tracker.listActivities();
 
-        // Display summary stats
         System.out.println("\nUser Summary:");
         tracker.showSummary();
         tracker.saveToFile("activity_log.txt");
-
     }
-    // --- Helper method stubs (implement next) ---
 
+    // --- Helper method to add activity ---
     private static void addActivityInteractive(Scanner scanner, Tracker tracker) {
         System.out.println("\n--- Add New Activity ---");
 
         // === ACTIVITY TYPE ===
         List<String> validActivities = Arrays.asList("Running", "Cycling", "Walking", "Swimming", "Gym", "Hiking");
-
         String type = "";
         while (true) {
             System.out.print("Enter activity type (Running / Cycling / Walking / Swimming / Gym / Hiking): ");
             type = scanner.nextLine().trim();
-
             boolean matchFound = false;
             for (String valid : validActivities) {
                 if (type.equalsIgnoreCase(valid)) {
@@ -186,12 +104,8 @@ public class StravaWannabe {
                     break;
                 }
             }
-
-            if (matchFound) {
-                break;
-            } else {
-                System.out.println("Invalid activity type! Please enter one of the available options.");
-            }
+            if (matchFound) break;
+            System.out.println("Invalid activity type! Please enter one of the available options.");
         }
 
         // === DISTANCE ===
@@ -200,11 +114,8 @@ public class StravaWannabe {
             try {
                 System.out.print("Enter distance (km): ");
                 distance = Double.parseDouble(scanner.nextLine());
-                if (distance > 0) {
-                    break;
-                } else {
-                    System.out.println("Distance must be positive!");
-                }
+                if (distance > 0) break;
+                System.out.println("Distance must be positive!");
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input! Please enter a numeric value.");
             }
@@ -216,11 +127,8 @@ public class StravaWannabe {
             try {
                 System.out.print("Enter duration (minutes): ");
                 duration = Double.parseDouble(scanner.nextLine());
-                if (duration > 0) {
-                    break;
-                } else {
-                    System.out.println("Duration must be positive!");
-                }
+                if (duration > 0) break;
+                System.out.println("Duration must be positive!");
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input! Please enter a numeric value.");
             }
@@ -228,26 +136,20 @@ public class StravaWannabe {
 
         // === LOCATION ===
         List<String> validLocations = Arrays.asList("Park", "Gym", "Street", "Trail", "Home");
-
         String location = "";
         while (true) {
             System.out.print("Enter location (Park / Gym / Street / Trail / Home): ");
             location = scanner.nextLine().trim();
-
             boolean matchFound = false;
             for (String valid : validLocations) {
                 if (location.equalsIgnoreCase(valid)) {
-                    location = valid; // normalize capitalization
+                    location = valid; // normalize
                     matchFound = true;
                     break;
                 }
             }
-
-            if (matchFound) {
-                break;
-            } else {
-                System.out.println("Invalid location! Please enter one of the listed options.");
-            }
+            if (matchFound) break;
+            System.out.println("Invalid location! Please enter one of the listed options.");
         }
 
         // === CREATE AND ADD ACTIVITY ===
@@ -257,9 +159,8 @@ public class StravaWannabe {
                 duration,
                 type,
                 location,
-                tracker.getUser().getWeight() // use the user's weight for calorie calculation
+                tracker.getUser().getWeight()
         );
-
         tracker.addActivity(activity);
         System.out.println("Activity added successfully!");
     }
