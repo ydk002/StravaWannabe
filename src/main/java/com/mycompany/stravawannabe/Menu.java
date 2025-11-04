@@ -8,10 +8,10 @@ package com.mycompany.stravawannabe;
  *
  * @author antal
  */
-
 import java.util.Scanner;
 
 public class Menu {
+
     private final Scanner scanner;
     private final Tracker tracker;
 
@@ -44,10 +44,10 @@ public class Menu {
                     tracker.showSummary();
                     break;
                 case "4":
-                    tracker.saveToFile();
+                    tracker.saveToFile("activity_log.txt");
                     break;
                 case "5":
-                    tracker.loadFromFile();
+                    tracker.loadFromFile("activity_log.txt");
                     break;
                 case "6":
                     System.out.println("Exiting... Goodbye!");

@@ -24,15 +24,15 @@ public class StravaWannabe {
 
         System.out.print("\nDo you want to load previous data from file? (yes/no): ");
         if (scanner.nextLine().equalsIgnoreCase("yes")) {
-            tracker.loadFromFile();
+            tracker.loadFromFile("activity_log.txt");
         }
 
         Menu menu = new Menu(scanner, tracker);
         menu.showMainMenu();
 
         System.out.println("\nSaving data before exit...");
-        tracker.saveToFile();
-        userManager.saveUsersToFile("users.txt"); // <-- save user data here
+        tracker.saveToFile("activity_log.txt"); // pass filename
+        userManager.saveUsersToFile("users.txt"); // save user data
         System.out.println("Goodbye!");
     }
 }

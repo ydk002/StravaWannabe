@@ -33,7 +33,6 @@ public class UserManager {
         return users;
     }
 
-    // Check if a username already exists
     public boolean userExists(String name) {
         for (User u : users) {
             if (u.getName().equalsIgnoreCase(name)) {
@@ -43,19 +42,22 @@ public class UserManager {
         return false;
     }
 
-    // Find a user by name
     public User getUserByName(String name) {
         for (User u : users) {
             if (u.getName().equalsIgnoreCase(name)) {
                 return u;
             }
         }
-        return null; // not found
+        return null;
     }
 
+    // -------------------
     // Interactive registration
+    // -------------------
     public User registerUser(Scanner scanner) {
         System.out.println("\n--- Register New User ---");
+
+        // Name
         String name;
         while (true) {
             System.out.print("Enter your name: ");
@@ -63,12 +65,13 @@ public class UserManager {
             if (name.isEmpty()) {
                 System.out.println("Name cannot be empty!");
             } else if (userExists(name)) {
-                System.out.println("A user with this name already exists. Choose another.");
+                System.out.println("A user with this name already exists.");
             } else {
                 break;
             }
         }
 
+        // Age
         int age = 0;
         while (true) {
             try {
@@ -80,6 +83,7 @@ public class UserManager {
             }
         }
 
+        // Weight
         double weight = 0;
         while (true) {
             try {
@@ -91,6 +95,7 @@ public class UserManager {
             }
         }
 
+        // Height
         double height = 0;
         while (true) {
             try {
@@ -102,6 +107,7 @@ public class UserManager {
             }
         }
 
+        // Gender
         String gender;
         while (true) {
             System.out.print("Enter gender: ");
@@ -112,18 +118,12 @@ public class UserManager {
             System.out.println("Gender cannot be empty!");
         }
 
-        // Goal type validation using a classic loop
-        List<String> validGoals = new ArrayList<>();
-        validGoals.add("Weight loss");
-        validGoals.add("Staying fit");
-        validGoals.add("Improving speed");
-        validGoals.add("Hobby");
-
+        // Goal Type
         String goalType;
+        List<String> validGoals = List.of("Weight loss", "Staying fit", "Improving speed", "Hobby");
         while (true) {
-            System.out.print("Enter goal type (Weight loss, Staying fit, Improving speed, Hobby): ");
+            System.out.print("Enter goal type " + validGoals + ": ");
             goalType = scanner.nextLine().trim();
-
             boolean match = false;
             for (String g : validGoals) {
                 if (goalType.equalsIgnoreCase(g)) {
@@ -132,17 +132,17 @@ public class UserManager {
                     break;
                 }
             }
-
             if (match) {
                 break;
             }
             System.out.println("Invalid goal type! Choose one of: " + validGoals);
         }
 
-        String password;  // <-- declare first
+        // Password
+        String password;
         while (true) {
             System.out.print("Enter password: ");
-            password = scanner.nextLine().trim();  // <-- assign inside loop
+            password = scanner.nextLine().trim();
             if (!password.isEmpty()) {
                 break;
             }
@@ -155,7 +155,9 @@ public class UserManager {
         return newUser;
     }
 
+    // -------------------
     // Interactive login
+    // -------------------
     public User loginUser(Scanner scanner) {
         System.out.println("\n--- Login ---");
 
@@ -165,53 +167,52 @@ public class UserManager {
         }
 
         while (true) {
-            System.out.print("Enter your name (or 'exit' to go back): ");
+            System.out.print("Enter your name (or type 'exit' to go back): ");
             String name = scanner.nextLine().trim();
             if (name.equalsIgnoreCase("exit")) {
                 return null;
             }
 
-            User u = getUserByName(name);
-            if (u == null) {
-                System.out.println("User not found. Try again or type 'exit'.");
+            if (name.isEmpty()) {
+                System.out.println("Name cannot be empty!");
                 continue;
             }
 
-            // Ask for password
-            System.out.print("Enter your password: ");
-            String password = scanner.nextLine().trim();
-
-            if (u.checkPassword(password)) {
-                System.out.println("✅ Logged in as " + u.getName());
-                return u;
+            User u = getUserByName(name);
+            if (u != null) {
+                // Ask for password
+                System.out.print("Enter password: ");
+                String password = scanner.nextLine().trim();
+                if (u.checkPassword(password)) {
+                    System.out.println("Logged in as " + u.getName());
+                    return u;
+                } else {
+                    System.out.println("Incorrect password. Try again.");
+                }
             } else {
-                System.out.println("Incorrect password! Try again.");
+                System.out.println("User not found. Try again or type 'exit' to return.");
             }
         }
     }
-    
-      public void loadUsersFromFile(String filename) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-            users.clear();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                // Expected format: name|age|weight|height|gender|goalType|passwordHash
-                String[] parts = line.split("\\|");
-                if (parts.length == 7) {
-                    String name = parts[0];
-                    int age = Integer.parseInt(parts[1]);
-                    double weight = Double.parseDouble(parts[2]);
-                    double height = Double.parseDouble(parts[3]);
-                    String gender = parts[4];
-                    String goalType = parts[5];
-                    String passwordHash = parts[6];
 
-                    User user = new User(name, age, weight, height, gender, goalType, passwordHash, true);
-                    users.add(user);
+    // -------------------
+    // File persistence
+    // -------------------
+    public void loadUsersFromFile(String filename) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            users.clear();
+            while ((line = reader.readLine()) != null) {
+                // parse line into User object, e.g. split by commas
+                // example: name,age,weight,height,gender,goal,passwordHash
+                String[] parts = line.split(",");
+                if (parts.length >= 7) {
+                    User u = new User(parts[0], Integer.parseInt(parts[1]), Double.parseDouble(parts[2]),
+                            Double.parseDouble(parts[3]), parts[4], parts[5], parts[6], true);
+                    users.add(u);
                 }
             }
-        } catch (FileNotFoundException e) {
-            // File may not exist on first run – ignore
+            System.out.println("Users loaded from file.");
         } catch (IOException e) {
             System.out.println("Error loading users: " + e.getMessage());
         }
@@ -220,20 +221,14 @@ public class UserManager {
     public void saveUsersToFile(String filename) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             for (User u : users) {
-                // Save in same format as above
-                writer.write(String.join("|",
-                        u.getName(),
-                        String.valueOf(u.getAge()),
-                        String.valueOf(u.getWeight()),
-                        String.valueOf(u.getHeight()),
-                        u.getGender(),
-                        u.getGoalType(),
+                writer.write(String.join(",", u.getName(), String.valueOf(u.getAge()), String.valueOf(u.getWeight()),
+                        String.valueOf(u.getHeight()), u.getGender(), u.getGoalType(),
                         u.getPasswordHash()));
                 writer.newLine();
             }
+            System.out.println("Users saved successfully to " + filename);
         } catch (IOException e) {
             System.out.println("Error saving users: " + e.getMessage());
         }
     }
 }
-
