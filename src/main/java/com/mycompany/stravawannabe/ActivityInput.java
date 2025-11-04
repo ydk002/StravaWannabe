@@ -9,10 +9,11 @@ package com.mycompany.stravawannabe;
  * @author antal
  */
 
-import java.util.Scanner;
-import java.util.Arrays;
-import java.util.List;
+
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Scanner;
+import java.util.ArrayList;
 
 
 public class ActivityInput {
@@ -20,15 +21,31 @@ public class ActivityInput {
     public static void addActivityInteractive(Scanner scanner, Tracker tracker) {
         System.out.println("\n--- Add New Activity ---");
 
-        List<String> validActivities = Arrays.asList("Running", "Cycling", "Walking", "Swimming", "Gym", "Hiking");
+        // Valid activities
+        List<String> validActivities = new ArrayList<>();
+        validActivities.add("Running");
+        validActivities.add("Cycling");
+        validActivities.add("Walking");
+        validActivities.add("Swimming");
+        validActivities.add("Gym");
+        validActivities.add("Hiking");
+
         String type = getValidatedString(scanner, "Enter activity type", validActivities);
 
         double distance = getPositiveDouble(scanner, "Enter distance (km): ");
         double duration = getPositiveDouble(scanner, "Enter duration (minutes): ");
 
-        List<String> validLocations = Arrays.asList("Park", "Gym", "Street", "Trail", "Home");
+        // Valid locations
+        List<String> validLocations = new ArrayList<>();
+        validLocations.add("Park");
+        validLocations.add("Gym");
+        validLocations.add("Street");
+        validLocations.add("Trail");
+        validLocations.add("Home");
+
         String location = getValidatedString(scanner, "Enter location", validLocations);
 
+        // Create activity and add to tracker
         Activity activity = new Activity(
                 LocalDateTime.now(),
                 distance,
@@ -37,6 +54,7 @@ public class ActivityInput {
                 location,
                 tracker.getUser().getWeight()
         );
+
         tracker.addActivity(activity);
         System.out.println("Activity added successfully!");
     }
@@ -46,10 +64,21 @@ public class ActivityInput {
         while (true) {
             System.out.print(prompt + " " + validOptions + ": ");
             input = scanner.nextLine().trim();
-            for (String valid : validOptions) {
-                if (input.equalsIgnoreCase(valid)) return valid;
+
+            boolean matchFound = false;
+            for (String option : validOptions) {
+                if (input.equalsIgnoreCase(option)) {
+                    input = option; // normalize
+                    matchFound = true;
+                    break;
+                }
             }
-            System.out.println("Invalid input! Choose one from: " + validOptions);
+
+            if (matchFound) {
+                return input;
+            } else {
+                System.out.println("Invalid input! Choose one from: " + validOptions);
+            }
         }
     }
 

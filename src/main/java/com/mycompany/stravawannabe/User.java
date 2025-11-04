@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.stravawannabe;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  *
@@ -12,19 +14,31 @@ public class User {
     private String name;
     private int age;
     private double weight;
-    private double height; // in cm
-    private String gender; // "Male", "Female", etc.
-    private String goalType; // "Weight loss", "Staying fit", "Improving speed", "Hobby", etc.
+    private double height;
+    private String gender;
+    private String goalType;
+    private String passwordHash; // new field
 
     // Constructor
-    public User(String name, int age, double weight, double height, String gender, String goalType) {
+    public User(String name, int age, double weight, double height, String gender, String goalType, String password) {
         this.name = name;
         this.age = age;
         this.weight = weight;
         this.height = height;
         this.gender = gender;
         this.goalType = goalType;
+        this.passwordHash = hashPassword(password);
     }
+    
+    public User(String name, int age, double weight, double height, String gender, String goalType, String passwordHash, boolean isHashed) {
+    this.name = name;
+    this.age = age;
+    this.weight = weight;
+    this.height = height;
+    this.gender = gender;
+    this.goalType = goalType;
+    this.passwordHash = passwordHash;
+}
 
     // Getters
     public String getName() { return name; }
@@ -34,15 +48,30 @@ public class User {
     public String getGender() { return gender; }
     public String getGoalType() { return goalType; }
 
-    // Setters
-    public void setName(String name) { this.name = name; }
-    public void setAge(int age) { this.age = age; }
-    public void setWeight(double weight) { this.weight = weight; }
-    public void setHeight(double height) { this.height = height; }
-    public void setGender(String gender) { this.gender = gender; }
-    public void setGoalType(String goalType) { this.goalType = goalType; }
+    // --- Password Handling ---
+    public boolean checkPassword(String password) {
+        return passwordHash.equals(hashPassword(password));
+    }
 
-    // Optional: toString method to display user info
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    // --- Utility to hash password ---
+    private static String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            byte[] hashed = md.digest(password.getBytes());
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashed) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @Override
     public String toString() {
         return "User{" +

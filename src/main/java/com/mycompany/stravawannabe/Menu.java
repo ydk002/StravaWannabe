@@ -44,10 +44,10 @@ public class Menu {
                     tracker.showSummary();
                     break;
                 case "4":
-                    tracker.saveToFile("activity_log.txt");
+                    tracker.saveToFile();
                     break;
                 case "5":
-                    tracker.loadFromFile("activity_log.txt");
+                    tracker.loadFromFile();
                     break;
                 case "6":
                     System.out.println("Exiting... Goodbye!");

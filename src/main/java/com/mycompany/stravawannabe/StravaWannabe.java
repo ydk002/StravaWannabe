@@ -11,6 +11,10 @@ public class StravaWannabe {
 
         // --- USER SESSION ---
         UserManager userManager = new UserManager();
+
+        // Load users from file at startup
+        userManager.loadUsersFromFile("users.txt");
+
         SessionManager sessionManager = new SessionManager(userManager);
         User loggedInUser = sessionManager.startSession(scanner);
 
@@ -20,14 +24,15 @@ public class StravaWannabe {
 
         System.out.print("\nDo you want to load previous data from file? (yes/no): ");
         if (scanner.nextLine().equalsIgnoreCase("yes")) {
-            tracker.loadFromFile("activity_log.txt");
+            tracker.loadFromFile();
         }
 
         Menu menu = new Menu(scanner, tracker);
         menu.showMainMenu();
 
         System.out.println("\nSaving data before exit...");
-        tracker.saveToFile("activity_log.txt");
+        tracker.saveToFile();
+        userManager.saveUsersToFile("users.txt"); // <-- save user data here
         System.out.println("Goodbye!");
     }
 }

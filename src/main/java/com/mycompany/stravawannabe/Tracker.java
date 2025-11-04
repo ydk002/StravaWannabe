@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.*;
 
 public class Tracker {
     private User user;
@@ -72,37 +73,36 @@ public class Tracker {
         }
     }
     
-    public void loadFromFile(String filename) {
+    public void loadFromFile() {
+    String filename = "activities_" + user.getName() + ".txt";
+
     try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
         String line;
-        System.out.println("\nLoading data from " + filename + "...\n");
-
+        activities.clear(); // start fresh
         while ((line = reader.readLine()) != null) {
+            // For now just print them (or you can parse back into Activity objects)
             System.out.println(line);
         }
-
-        System.out.println("\nData loaded successfully!");
+        System.out.println("Activities loaded for " + user.getName());
+    } catch (FileNotFoundException e) {
+        System.out.println("No previous activities found for " + user.getName());
     } catch (IOException e) {
-        System.out.println("Error loading data: " + e.getMessage());
+        System.out.println("Error loading activities: " + e.getMessage());
     }
 }
 
     
-    public void saveToFile(String filename) {
+    public void saveToFile() {
+    String filename = "activities_" + user.getName() + ".txt";
+
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-        // Save user info
-        writer.write("User Info:\n");
-        writer.write(user.toString() + "\n\n");
-
-        // Save activities
-        writer.write("Activities:\n");
         for (Activity a : activities) {
-            writer.write(a.toString() + "\n");
+            writer.write(a.toString());
+            writer.newLine();
         }
-
-        System.out.println("Data saved successfully to " + filename);
+        System.out.println("Activities saved for " + user.getName());
     } catch (IOException e) {
-        System.out.println("Error saving data: " + e.getMessage());
+        System.out.println("Error saving activities: " + e.getMessage());
     }
 }
 
