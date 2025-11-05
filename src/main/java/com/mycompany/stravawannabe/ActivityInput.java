@@ -9,7 +9,6 @@ package com.mycompany.stravawannabe;
  * @author antal
  */
 
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Scanner;
@@ -45,15 +44,23 @@ public class ActivityInput {
 
         String location = getValidatedString(scanner, "Enter location", validLocations);
 
-        // Create activity and add to tracker
-        Activity activity = new Activity(
-                LocalDateTime.now(),
-                distance,
-                duration,
-                type,
-                location,
-                tracker.getUser().getWeight()
-        );
+        // Create the correct subclass of Activity
+        Activity activity = null;
+        LocalDateTime now = LocalDateTime.now();
+        double userWeight = tracker.getUser().getWeight();
+
+        switch (type) {
+            case "Running":
+                activity = new RunningActivity(now, distance, duration, location, userWeight);
+                break;
+            case "Cycling":
+                activity = new CyclingActivity(now, distance, duration, location, userWeight);
+                break;
+            // Add other types if you create subclasses for them
+            default:
+                System.out.println("Activity type not implemented yet. Using generic RunningActivity as fallback.");
+                activity = new RunningActivity(now, distance, duration, location, userWeight);
+        }
 
         tracker.addActivity(activity);
         System.out.println("Activity added successfully!");

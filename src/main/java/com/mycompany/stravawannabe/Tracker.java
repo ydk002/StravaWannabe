@@ -73,36 +73,28 @@ public class Tracker {
         }
     }
     
-    public void loadFromFile() {
-    String filename = "activities_" + user.getName() + ".txt";
-
+public void loadFromFile(String filename) {
     try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
         String line;
-        activities.clear(); // start fresh
+        System.out.println("\nLoading activities from " + filename + "...\n");
         while ((line = reader.readLine()) != null) {
-            // For now just print them (or you can parse back into Activity objects)
-            System.out.println(line);
+            System.out.println(line); // You can parse this line to recreate Activity objects
         }
-        System.out.println("Activities loaded for " + user.getName());
-    } catch (FileNotFoundException e) {
-        System.out.println("No previous activities found for " + user.getName());
+        System.out.println("\nActivities loaded successfully!");
     } catch (IOException e) {
-        System.out.println("Error loading activities: " + e.getMessage());
+        System.out.println("Error loading data: " + e.getMessage());
     }
 }
 
-    
-    public void saveToFile() {
-    String filename = "activities_" + user.getName() + ".txt";
-
+public void saveToFile(String filename) {
     try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+        writer.write("User: " + user.getName() + "\n");
         for (Activity a : activities) {
-            writer.write(a.toString());
-            writer.newLine();
+            writer.write(a.toString() + "\n");
         }
-        System.out.println("Activities saved for " + user.getName());
+        System.out.println("Activities saved successfully to " + filename);
     } catch (IOException e) {
-        System.out.println("Error saving activities: " + e.getMessage());
+        System.out.println("Error saving data: " + e.getMessage());
     }
 }
 

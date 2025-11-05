@@ -1,5 +1,2 @@
-User Info:
-User{name='david', age=17, weight=67.0, height=667.0, gender='man', goalType='Weight loss'}
-
-Activities:
-2025-11-04T23:18:52.144078 | Type: Running | Distance: 5.00 km | Duration: 25.0 min | Avg Speed: 12.00 km/h | Calories: 274 | Location: Gym
+User: szabi
+2025-11-05T11:47:35.414998300 | Type: Running | Distance: 3.00 km | Duration: 60.0 min | Avg Speed: 3.00 km/h | Calories: 132 | Location: Home

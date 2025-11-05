@@ -11,7 +11,7 @@ package com.mycompany.stravawannabe;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Activity {
+public abstract class Activity {
     private LocalDateTime dateTime; // when the activity took place
     private double distance; // in kilometers
     private double duration; // in minutes
@@ -19,39 +19,23 @@ public class Activity {
     private String location;
     private double averageSpeed;
     private double caloriesBurned;
+
     // Constructor
     public Activity(LocalDateTime dateTime, double distance, double duration, String type, String location, double userWeight) {
-    this.dateTime = dateTime;
-    this.distance = distance;
-    this.duration = duration;
-    this.type = type;
-    this.location = location;
+        this.dateTime = dateTime;
+        this.distance = distance;
+        this.duration = duration;
+        this.type = type;
+        this.location = location;
 
-    // Calculate derived data
-    this.averageSpeed = distance / (duration / 60.0); // km/h
-    this.caloriesBurned = calculateCalories(userWeight, distance, type);
-}
-
-    private double calculateCalories(double weight, double distance, String type) {
-    double met; // MET value depends on activity type
-    switch (type.toLowerCase()) {
-        case "running":
-            met = 9.8;
-            break;
-        case "cycling":
-            met = 7.5;
-            break;
-        case "walking":
-            met = 3.5;
-            break;
-        default:
-            met = 6.0; // average value
+        // Calculate derived data
+        this.averageSpeed = distance / (duration / 60.0); // km/h
+        this.caloriesBurned = calculateCalories(userWeight, distance);
     }
 
-    // Calories = MET × weight(kg) × time(hr)
-    double hours = duration / 60.0;
-    return met * weight * hours;
-}
+    // --- ABSTRACT CALORIE FORMULA ---
+    // Each subclass must provide its own calorie calculation
+    protected abstract double calculateCalories(double weight, double distance);
 
     // Getters
     public LocalDateTime getDateTime() { return dateTime; }
@@ -73,11 +57,11 @@ public class Activity {
 
     // Optional: formatted string for display
     @Override
-public String toString() {
-    return String.format(
-        "%s | Type: %s | Distance: %.2f km | Duration: %.1f min | Avg Speed: %.2f km/h | Calories: %.0f | Location: %s",
-        dateTime.toString(), type, distance, duration, averageSpeed, caloriesBurned, location
-    );
-}
+    public String toString() {
+        return String.format(
+            "%s | Type: %s | Distance: %.2f km | Duration: %.1f min | Avg Speed: %.2f km/h | Calories: %.0f | Location: %s",
+            dateTime.toString(), type, distance, duration, averageSpeed, caloriesBurned, location
+        );
+    }
 }
 
