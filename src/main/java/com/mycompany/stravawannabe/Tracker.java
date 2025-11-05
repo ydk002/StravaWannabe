@@ -25,44 +25,32 @@ public class Tracker {
         this.user = user;
         this.activities = new ArrayList<>();
     }
-    
-    
+
     public User getUser() {
-    return user;
-}
+        return user;
+    }
 
-
-    // Add a new activity
     public void addActivity(Activity activity) {
         activities.add(activity);
     }
 
-    // Get total distance (sum of all activities)
     public double totalDistance() {
         double total = 0;
-        for (Activity a : activities) {
-            total += a.getDistance();
-        }
+        for (Activity a : activities) total += a.getDistance();
         return total;
     }
 
-    // Get total duration (sum of all activities)
     public double totalDuration() {
         double total = 0;
-        for (Activity a : activities) {
-            total += a.getDuration();
-        }
+        for (Activity a : activities) total += a.getDuration();
         return total;
     }
 
-    // Get average pace across all activities (minutes per km)
     public double averagePace() {
         double totalDistance = totalDistance();
-        if (totalDistance == 0) return 0;
-        return totalDuration() / totalDistance;
+        return totalDistance == 0 ? 0 : totalDuration() / totalDistance;
     }
 
-    // List all activities
     public void listActivities() {
         if (activities.isEmpty()) {
             System.out.println("No activities logged yet.");
@@ -72,34 +60,36 @@ public class Tracker {
             }
         }
     }
-    
-public void loadFromFile(String filename) {
-    try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
-        String line;
-        System.out.println("\nLoading activities from " + filename + "...\n");
-        while ((line = reader.readLine()) != null) {
-            System.out.println(line); // You can parse this line to recreate Activity objects
+
+    public void loadFromFile(String filename) {
+        activities.clear(); // clear previous data
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            System.out.println("\nLoading data from " + filename + "...\n");
+            while ((line = reader.readLine()) != null) {
+                // TODO: Parse the line into Activity object
+                // For now, just print
+                System.out.println(line);
+            }
+            System.out.println("\nData loaded successfully!");
+        } catch (FileNotFoundException e) {
+            System.out.println("No previous activity file found for user. Starting fresh.");
+        } catch (IOException e) {
+            System.out.println("Error loading data: " + e.getMessage());
         }
-        System.out.println("\nActivities loaded successfully!");
-    } catch (IOException e) {
-        System.out.println("Error loading data: " + e.getMessage());
     }
-}
 
-public void saveToFile(String filename) {
-    try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-        writer.write("User: " + user.getName() + "\n");
-        for (Activity a : activities) {
-            writer.write(a.toString() + "\n");
+    public void saveToFile(String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            for (Activity a : activities) {
+                writer.write(a.toString() + "\n"); // for now, saving as string
+            }
+            System.out.println("Data saved successfully to " + filename);
+        } catch (IOException e) {
+            System.out.println("Error saving data: " + e.getMessage());
         }
-        System.out.println("Activities saved successfully to " + filename);
-    } catch (IOException e) {
-        System.out.println("Error saving data: " + e.getMessage());
     }
-}
 
-
-    // Optional: show a summary of user stats
     public void showSummary() {
         System.out.println("User: " + user.getName());
         System.out.println("Goal: " + user.getGoalType());

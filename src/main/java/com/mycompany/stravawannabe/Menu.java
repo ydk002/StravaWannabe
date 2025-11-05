@@ -11,13 +11,14 @@ package com.mycompany.stravawannabe;
 import java.util.Scanner;
 
 public class Menu {
-
     private final Scanner scanner;
     private final Tracker tracker;
+    private final String userFile;
 
-    public Menu(Scanner scanner, Tracker tracker) {
+    public Menu(Scanner scanner, Tracker tracker, String userFile) {
         this.scanner = scanner;
         this.tracker = tracker;
+        this.userFile = userFile;
     }
 
     public void showMainMenu() {
@@ -27,8 +28,8 @@ public class Menu {
             System.out.println("1. Add new activity");
             System.out.println("2. View all activities");
             System.out.println("3. Show summary");
-            System.out.println("4. Save data to file");
-            System.out.println("5. Load data from file");
+            System.out.println("4. Save data");
+            System.out.println("5. Load data");
             System.out.println("6. Exit");
             System.out.print("Choose an option (1-6): ");
 
@@ -44,10 +45,10 @@ public class Menu {
                     tracker.showSummary();
                     break;
                 case "4":
-                    tracker.saveToFile("activity_log.txt");
+                    tracker.saveToFile(userFile);
                     break;
                 case "5":
-                    tracker.loadFromFile("activity_log.txt");
+                    tracker.loadFromFile(userFile);
                     break;
                 case "6":
                     System.out.println("Exiting... Goodbye!");
